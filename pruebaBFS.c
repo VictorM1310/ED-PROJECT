@@ -74,8 +74,6 @@ void liberaArregloInt2D(arregloInt2D *aI)
 }
 
 
-int contarVinculos(Grafo *G, int vertice);
-
 int contarVinculos(Grafo *G, int vertice)
 {
 	int valencia = 0;
@@ -97,18 +95,11 @@ int contarVinculos(Grafo *G, int vertice)
 
 
 
-
-
-
-
-
-
 int main(int argc, char**argv)
 {
 	Grafo G;
 	int i;
 	BFS_ElemTabla *Tabla_BFS = NULL;
-   	nodoGrafoA *n1, *n2;
 	char *nomUsuarioO;
 	char *nomUsuarioD;
 	
@@ -119,21 +110,15 @@ int main(int argc, char**argv)
 	for (i = 0; i < NVERTICES; ++i)
 	{
 		agregaVertice(&G, Identificadores[i]);
-			//fprintf (stderr, "El vertice %s ya existe en el grafo\n", Identificadores[i]);
-		//inorder (&(G.TV));
-		//printf("\n____________________________________\n\n");
+
 	}
 
 	for(int i = 0; i < NARISTAS; i++)
 	{
 		agregaArista(&G,Identificadores[Relaciones[i][0]], Identificadores[Relaciones[i][1]]);
-		//printf("Agregamos una arista entre los vertices \"%s\" y \"%s\".\n",Identificadores[Relaciones[i][0]], Identificadores[Relaciones[i][1]]);
 	
 	}
 	
-	
-	
-	//imprimeGrafo(&G);
 
 	nomUsuarioO =  malloc(20 * sizeof(char));
 	nomUsuarioD =  malloc(20 * sizeof(char));
@@ -145,18 +130,8 @@ int main(int argc, char**argv)
 			 strncpy(nomUsuarioD, argv[2], 20);
 	}
 	
-   BFS(&G,nomUsuarioO, &Tabla_BFS);
-   /*
-   for (i=0;i<G.M.nV;++i)
-      printf ("V:%02d, D:%02d, Padre:%02d\n", i, Tabla_BFS[i].D, Tabla_BFS[i].Padre);
-   printf("\n");
-   
-   for (i=0;i<G.M.nV;++i)
-   {
-      n1  = buscaI(&(G.TI), i);
-      n2  = buscaI(&(G.TI), Tabla_BFS[i].Padre);
-   }
-   */
+   	BFS(&G,nomUsuarioO, &Tabla_BFS);
+
 
    	printf("\n");
 	printf("La ruta de %s a %s es: \n\n",nomUsuarioO,nomUsuarioD);
@@ -166,8 +141,8 @@ int main(int argc, char**argv)
 	
 	int r = NVERTICES;	
 	int c = 2;
-	
-	
+	int tmp = 0;
+	unsigned int *Idx;
 	
 	arregloInt2D listaValencias;
 	initArregloInt2D(&listaValencias, r, c );
@@ -177,17 +152,29 @@ int main(int argc, char**argv)
 		listaValencias.B[i][0] = contarVinculos(&G, i);  //LLENAMOS UN ARREGLO CON INDICES CON LAS VALENCIAS DE LOS VERTICES
 		listaValencias.B[i][1] = i;
 	}
+
+
+	printf("\n");
+
+	Idx = (unsigned int *)malloc(NVERTICES * sizeof (unsigned int));
 	
-	
-	  for (int i=0; i < NVERTICES - 1; i++)
-     		 for (j= NVERTICES -1; j > i;j--)
-        		 if (listaValencias.B[j][0] < listaValencias.B[j-1][0]) //ORDENAMOS LOS INDICES DE LAS VALENCIAS 
-				swap(listaValencias.B[j][1], listaValencias.B[j-1][1], tmp);
-	
+	for (i=0; i < NVERTICES; i++)
+		Idx[i] = i;
+
+	for (int i=0; i < NVERTICES - 1; i++)
+ 		 for (int j = NVERTICES -1; j > i;j--)
+        	if (listaValencias.B[Idx[j]][0] > listaValencias.B[Idx[j-1]][0]) //ORDENAMOS LOS INDICES DE LAS VALENCIAS
+				{ 
+					swap(Idx[j], Idx[j-1], tmp);
+				}
+
+
+	printf("Listado de usuarios por popularidad:\n\n");
+
 	for (int i=0; i<NVERTICES; ++i)
 	{
 		
-		printf("%d . %s tiene valencia %d", i, Identificadores[listaValencias.B[i][1]], listaValencias.B[listaValencias.B[i][1]][0]);
+		printf("%d . %s tiene valencia %d\n", i, Identificadores[Idx[i]], listaValencias.B[Idx[i]][0]);
 		//IMPRIMIMOS CON RESPECTO AL ORDEN DE LOS INDICES 
 	}
 	
@@ -200,6 +187,7 @@ int main(int argc, char**argv)
 
 	free(nomUsuarioD);
 	free(nomUsuarioO);
+	free(Idx);
 	liberaArregloInt2D(&listaValencias);
 	
 	return 0;
