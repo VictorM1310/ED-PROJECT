@@ -62,3 +62,17 @@ void liberaArregloInt2D(arregloInt2D *aI)
 			aI->B = NULL;
 		}
 }
+
+void bubbleSortIdx (int *A, unsigned int *I, unsigned int n)
+{
+	unsigned int i, j, tmp;
+	
+	//Inicializamos el arreglo de índices.
+	for (i=0; i < n; i++)
+		I[i] = i;
+	
+   for (i=0; i < n-1; i++)
+      for (j=n-1; j > i;j--)
+         if (A[I[j]] < A[I[j-1]])
+				swap(I[j], I[j-1], tmp);
+}
