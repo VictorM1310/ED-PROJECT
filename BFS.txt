@@ -1,0 +1,19 @@
+BFS(G, x):
+//Init Tabla T
+for u in  G.V:
+	T[u].C = Blanco
+	T[u].D = infinito
+	T[u].Pi = Nulo
+T[x].C = Gris
+T[x].D = 0
+Q={} //Cola vacia.
+mete(Q, x)
+while (la cola Q NO este vacia)
+	u = saca(Q)
+	for v in Adyacentes(u)
+		if T[v].C == Blanco
+			T[v].C = Gris
+			T[v].D = T[u].D + 1
+			T[v].Pi = u
+			mete(Q, u)
+	T[u].C = Negro		
