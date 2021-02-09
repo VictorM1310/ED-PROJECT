@@ -6,6 +6,7 @@
 
 #define NVERTICES 1000
 #define NARISTAS 34629
+#define swap(x,y,z) {z=x;x=y;y=z;}
 
 typedef struct
 {
@@ -173,10 +174,22 @@ int main(int argc, char**argv)
 	
 	for (int i=0; i<NVERTICES; ++i)
 	{
-		listaValencias.B[i][0] = contarVinculos(&G, i); 
+		listaValencias.B[i][0] = contarVinculos(&G, i);  //LLENAMOS UN ARREGLO CON INDICES CON LAS VALENCIAS DE LOS VERTICES
 		listaValencias.B[i][1] = i;
 	}
 	
+	
+	  for (int i=0; i < NVERTICES - 1; i++)
+     		 for (j= NVERTICES -1; j > i;j--)
+        		 if (listaValencias.B[j][0] < listaValencias.B[j-1][0]) //ORDENAMOS LOS INDICES DE LAS VALENCIAS 
+				swap(listaValencias.B[j][1], listaValencias.B[j-1][1], tmp);
+	
+	for (int i=0; i<NVERTICES; ++i)
+	{
+		
+		printf("%d . %s tiene valencia %d", i, Identificadores[listaValencias.B[i][1]], listaValencias.B[listaValencias.B[i][1]][0]);
+		//IMPRIMIMOS CON RESPECTO AL ORDEN DE LOS INDICES 
+	}
 	
 	
 	
